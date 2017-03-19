@@ -109,10 +109,12 @@ class Player(pygame.sprite.Sprite):
                  speed,
                  pos_init,
                  SCREEN_WIDTH,
-                 SCREEN_HEIGHT):
+                 SCREEN_HEIGHT,
+                 momentum = 0.0):
 
         pygame.sprite.Sprite.__init__(self)
 
+        self.momentum = momentum
         self.SCREEN_WIDTH = SCREEN_WIDTH
         self.SCREEN_HEIGHT = SCREEN_HEIGHT
 
@@ -135,6 +137,7 @@ class Player(pygame.sprite.Sprite):
         self.radius = radius
 
     def update(self, dx, dy, dt):
+        decay_per_second = self.momentum**dt
         self.vel.x += dx
         self.vel.y += dy
 
@@ -150,7 +153,7 @@ class Player(pygame.sprite.Sprite):
             self.vel.x = 0.0
         else:
             self.pos.x = new_x
-            self.vel.x = self.vel.x * 0.975
+            self.vel.x = self.vel.x * decay_per_second
 
         if new_y > self.SCREEN_HEIGHT - self.radius * 2:
             self.pos.y = self.SCREEN_HEIGHT - self.radius * 2
@@ -160,7 +163,7 @@ class Player(pygame.sprite.Sprite):
             self.vel.y = 0.0
         else:
             self.pos.y = new_y
-            self.vel.y = self.vel.y * 0.975
+            self.vel.y = self.vel.y * decay_per_second
 
         self.rect.center = (self.pos.x, self.pos.y)
 
